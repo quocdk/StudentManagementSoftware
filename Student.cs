@@ -10,25 +10,30 @@ namespace StudentManagementSoftware
     {
         private string idStudent;
         private string university;
-        private ushort year; //chọn ushort vì là số nguyên dương và từ 0 đến 65,535
-        private float cumulativeGPA; //chọn float vì là số thực và dùng ít bit hơn
+        private int yearStart; 
+        private float cumulativeGPA; 
 
         public Student()
         {
             
         }
 
-        public Student(ushort id, string name, DateTime dateOfBirth, string address, float height, float weight, string idStudent, string university, ushort year, float cumulativeGPA) : base(id, name, dateOfBirth, address, height, weight)
+        public Student(int id, string name, DateOnly dateOfBirth, string address, float height, float weight, string idStudent, string university, int yearStart, float cumulativeGPA) : base(id, name, dateOfBirth, address, height, weight)
         {
             this.idStudent = idStudent;
             this.university = university;
-            this.year = year;
+            this.yearStart = yearStart;
             this.cumulativeGPA = cumulativeGPA;
         }
 
+        public string IdStudent { get => idStudent; set => idStudent = value; }
+        public string University { get => university; set => university = value; }
+        public int YearStart { get => yearStart; set => yearStart = value; }
+        public float CumulativeGPA { get => cumulativeGPA; set => cumulativeGPA = value; }
+
         public void toString()
         {
-            Console.WriteLine($"{id} {name} {dateOfBirth} {address} {height} {weight} {idStudent} {university} {year} {cumulativeGPA}");
+            Console.WriteLine($"{id} | {name} | {dateOfBirth} | {address} | {height} | {weight} | {idStudent} | {university} | {yearStart} | {cumulativeGPA}");
         }
     }
 }

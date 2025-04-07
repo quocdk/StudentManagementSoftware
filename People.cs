@@ -8,9 +8,9 @@ namespace StudentManagementSoftware
 {
     internal class People
     {
-        protected ushort id; //chọn ushort vì là số nguyên dương và từ 0 đến 65,535
+        protected int id; 
         protected string name;
-        protected DateTime dateOfBirth;
+        protected DateOnly dateOfBirth;
         protected string address;
         protected float height; //chọn float vì là số thực và dùng ít bit hơn
         protected float weight; //chọn float vì là số thực và dùng ít bit hơn
@@ -32,7 +32,7 @@ namespace StudentManagementSoftware
             
         }
 
-        public People(ushort id, string name, DateTime dateOfBirth, string address, float height, float weight)
+        public People(int id, string name, DateOnly dateOfBirth, string address, float height, float weight)
         {
             this.id = id;
             this.name = name;
@@ -42,9 +42,16 @@ namespace StudentManagementSoftware
             this.weight = weight;
         }
 
+        public int Id { get => id; set => id = value; }
+        public string Name { get => name; set => name = value; }
+        public DateOnly DateOfBirth { get => dateOfBirth; set => dateOfBirth = value; }
+        public string Address { get => address; set => address = value; }
+        public float Height { get => height; set => height = value; }
+        public float Weight { get => weight; set => weight = value; }
+
         public void toString()
         {
-            Console.WriteLine($"{id} {name} {dateOfBirth} {address} {height} {weight}");
+            Console.WriteLine($"{id} | {name} | {dateOfBirth} | {address} | {height} | {weight}");
         }
     }
     
