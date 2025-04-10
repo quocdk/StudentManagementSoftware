@@ -11,53 +11,55 @@ namespace StudentManagementSoftware
         static void Main(string[] args)
         {
             StudentService studentService = new StudentService();
+            studentService.ReadFromFile();
             do
             {
                 Console.WriteLine("----------------------------------------------------------------");
                 Console.WriteLine("Student Management");
                 Console.WriteLine("1. Add new student");
-                Console.WriteLine("2. Search student");
-                Console.WriteLine("3. Edit student information");
-                Console.WriteLine("4. Delete student");
-                Console.WriteLine("5. View list student");
-                Console.WriteLine("6.");
-                Console.WriteLine("7.");
-                Console.WriteLine("8.");
-                Console.WriteLine("9.");
-                Console.WriteLine("0.");
+                Console.WriteLine("2. View list student");
+                Console.WriteLine("3. Search student");
+                Console.WriteLine("4. Edit student information");
+                Console.WriteLine("5. Delete student");
+                Console.WriteLine("6. Shows academic performance percentage");
+                Console.WriteLine("7. Shows GPA percentage");
+                Console.WriteLine("8. Print list students by academic performance");
+                Console.WriteLine("9. Save file and exit program");
                 Console.Write("Please enter your choice: ");
                 string choise = Console.ReadLine();
                 switch (choise)
                 {
                     case "1":
-                        studentService.Create();
+                        studentService.CreateStudent();
                         break;
                     case "2":
-                        studentService.GetById();
+                        studentService.GetAllStudent();
                         break;
                     case "3":
-                        studentService.Update();
+                        studentService.GetStudentById();
                         break;
                     case "4":
-                        studentService.Delete();
+                        studentService.UpdateStudent();
                         break;
                     case "5":
-                        studentService.GetAll();
+                        studentService.DeleteStudent();
                         break;
                     case "6":
-                        //studentService.ShowAvg();
+                        studentService.GetPercentPerformance();
                         break;
                     case "7":
-                        //studentService.ShowStatus();
+                        studentService.GetPercentGPA();
                         break;
                     case "8":
-                        //studentService.ShowListStudentsByAvg();
-                        break;
+                        studentService.ShowAllStudentByPerformance();
+                        break;                    
                     case "9":
-                        //studentService.SaveToFile();
-                        break;
-                    case "0":
+                        studentService.SaveToFile();
+                        Console.WriteLine("Program exited");
                         return;
+                    //case "0":
+                    //    studentService.ReadFromFile();
+                    //    break;
                     default:
                         Console.WriteLine("Option does not exist. Please select again.");
                         break;

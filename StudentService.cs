@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -9,81 +11,82 @@ namespace StudentManagementSoftware
 {
     internal class StudentService
     {
-        private List<Student> listStudent = new List<Student>();
-        private Student student = new Student();
-        private string _input;
+        private List<Student> listStudent;
+        private Student student; 
+        private int id = 4;
+        private Input input = new Input();
+        private FileStream fileStream;
+        private BinaryFormatter binaryFormatter;
+        private string path = @"D:\Hoc tap\Code\StudentManagementSoftware\Data.bin";
         public StudentService()
         {
             listStudent = new List<Student>()
             {
-                new Student(1,"A",DateOnly.Parse("1/1/2001"),"A",1,1,"001","A",2021,1),
-                new Student(2,"B",DateOnly.Parse("2/2/2002"),"B",2,2,"002","B",2022,2),
-                new Student(3,"C",DateOnly.Parse("3/3/2003"),"C",3,3,"003","C",2023,3),
-                
+                new Student(1,"Quoc",DateTime.Parse("1/1/2001"),"TB",170,70,"PH00000001","FPT",2021,9),
+                new Student(2,"Dung",DateTime.Parse("2/2/2002"),"HN",155,55,"PH00000002","FPT",2022,6),
+                new Student(3,"Linh",DateTime.Parse("3/3/2003"),"QN",180,80,"PH00000003","FPT",2023,3),
             };
         }
-        public void Create()
+        public void CreateStudent()
         {
             Console.WriteLine("----------------------------------------------------------------");
             Console.WriteLine("Add new student");
             student = new Student();
-            Console.Write("Please enter id: ");
-            student.Id = int.Parse(Console.ReadLine());
-            Console.Write("Please enter name: ");
-            student.Name = Console.ReadLine();
-            Console.Write("Please enter date of birth: ");
-            student.DateOfBirth = DateOnly.Parse(Console.ReadLine());
-            Console.Write("Please enter address: ");
-            student.Address = Console.ReadLine();
-            Console.Write("Please enter height: ");
-            student.Height = float.Parse(Console.ReadLine());
-            Console.Write("Please enter weight: ");
-            student.Weight = float.Parse(Console.ReadLine());
-            Console.Write("Please enter id student: ");
-            student.IdStudent = Console.ReadLine();
-            Console.Write("Please enter the university: ");
-            student.University = Console.ReadLine();
-            Console.Write("Please enter the year you started studying: ");
-            student.YearStart = int.Parse(Console.ReadLine());
-            Console.Write("Please enter cumulative GPA: ");
-            student.CumulativeGPA = float.Parse(Console.ReadLine());
+            student.Id = id;           
+            student.Name = input.GetName();
+            student.DateOfBirth = input.GetDateOfBirth();
+            student.Address = input.GetAddress();
+            student.Height = input.GetHeight();           
+            student.Weight = input.GetWeight();
+            student.IdStudent = input.GetIdStudent();
+            student.University = input.GetUniversity();
+            student.YearStart = input.GetYearStart();
+            student.CumulativeGPA = input.GetGpa();
+            student.UpdateAcademicPerformance();
             listStudent.Add(student);
             Console.WriteLine("Add new student successfully");
             student.toString();
+            id++;
         }
 
-        public void GetAll()
+        public void GetAllStudent()
         {
             Console.WriteLine("----------------------------------------------------------------");
             Console.WriteLine("View list student");
-            foreach (Student student in listStudent)
+            if (listStudent.Any())
             {
-                student.toString();
+                foreach (Student student in listStudent)
+                {
+                    student.toString();
+                }
+            }
+            else
+            {
+                Console.WriteLine($"There are no students");
             }
         }
-        public void GetById()
+        public Student GetStudentById()
         {
             Console.WriteLine("----------------------------------------------------------------");
-            Console.WriteLine("Search student");
-            Console.Write("Please enter id: ");
-            _input = Console.ReadLine();
-            student = listStudent.FirstOrDefault(x => x.Id == int.Parse(_input));
+            Console.WriteLine("Search student");        
+            int id = input.GetId();
+            student = listStudent.FirstOrDefault(x => x.Id == id);
             if (student == null)
             {
                 Console.WriteLine("Student does not exist");
+                return new Student();
             }
             else
             {
                 student.toString();
+                return student;
             }
         }
-        public void Update()
+        public void UpdateStudent()
         {
             Console.WriteLine("----------------------------------------------------------------");
-            Console.WriteLine("Edit student information");
-            Console.Write("Please enter id: ");
-            _input = Console.ReadLine();
-            student = listStudent.FirstOrDefault(x => x.Id == int.Parse(_input));
+            Console.WriteLine("Edit student information");          
+            student = GetStudentById();
             if (student == null)
             {
                 Console.WriteLine("Student does not exist");
@@ -104,36 +107,29 @@ namespace StudentManagementSoftware
                 switch (choise)
                 {
                     case "1":
-                        Console.Write("Please enter name: ");
-                        student.Name = Console.ReadLine();
+                        student.Name = input.GetName();
                         break;
                     case "2":
-                        Console.Write("Please enter your date of birth: ");
-                        student.DateOfBirth = DateOnly.Parse(Console.ReadLine());
+                        student.DateOfBirth = input.GetDateOfBirth();
                         break;
                     case "3":
-                        Console.Write("Please enter address: ");
-                        student.Address = Console.ReadLine();
+                        student.Address = input.GetAddress();
                         break;
                     case "4":
-                        Console.Write("Please enter height: ");
-                        student.Height = float.Parse(Console.ReadLine());
+                        student.Height = input.GetHeight();
                         break;
                     case "5":
-                        Console.Write("Please enter weight: ");
-                        student.Weight = float.Parse(Console.ReadLine());
+                        student.Weight = input.GetWeight();
                         break;
                     case "6":
-                        Console.Write("Please enter the university: ");
-                        student.University = Console.ReadLine();
+                        student.University = input.GetUniversity();
                         break;
                     case "7":
-                        Console.Write("Please enter the year you started studying: ");
-                        student.YearStart = int.Parse(Console.ReadLine());
+                        student.YearStart = input.GetYearStart();
                         break;
                     case "8":
-                        Console.Write("Please enter cumulative GPA: ");
-                        student.CumulativeGPA = float.Parse(Console.ReadLine());
+                        student.CumulativeGPA = input.GetGpa();
+                        student.UpdateAcademicPerformance();
                         break;
                     default:
                         Console.WriteLine("Option does not exist. Please select again.");
@@ -143,13 +139,12 @@ namespace StudentManagementSoftware
                 student.toString();
             }          
         }
-        public void Delete()
+        public void DeleteStudent()
         {
             Console.WriteLine("----------------------------------------------------------------");
             Console.WriteLine("Delete student");
-            Console.Write("Please enter id: ");
-            _input = Console.ReadLine();
-            student = listStudent.FirstOrDefault(x => x.Id == int.Parse(_input));
+            int id = input.GetId();
+            student = listStudent.FirstOrDefault(x => x.Id == id);
             if (student == null)
             {
                 Console.WriteLine("Student does not exist");               
@@ -159,6 +154,146 @@ namespace StudentManagementSoftware
                 listStudent.Remove(student);
                 Console.WriteLine("Delete successful");
             }          
+        }
+
+        public void GetPercentPerformance()
+        {
+            Console.WriteLine("----------------------------------------------------------------");
+            Console.WriteLine("Shows academic performance percentage");          
+            if (listStudent.Any()) 
+            {
+                var listPerformance = listStudent
+                .GroupBy(s => s.AcademicPerformance)
+                .Select(g => new
+                {
+                    Name = g.Key,
+                    Percent = (float)g.Count() / listStudent.Count * 100
+                })
+                .OrderByDescending(p => p.Percent)
+                .ToList();
+                foreach (var performance in listPerformance)
+                {
+                    Console.WriteLine($"{performance.Name}: {performance.Percent}%");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No students so no academic performance percentage list");
+            }
+
+        }
+        public void GetPercentGPA()
+        {
+            Console.WriteLine("----------------------------------------------------------------");
+            Console.WriteLine("Shows GPA percentage");          
+            if (listStudent.Any())
+            {
+                Dictionary<float, int> gpa = new Dictionary<float, int>();
+                foreach (var student in listStudent)
+                {
+                    if (gpa.ContainsKey(student.CumulativeGPA))
+                    {
+                        gpa[student.CumulativeGPA]++;
+                    }
+                    else
+                    {
+                        gpa[student.CumulativeGPA] = 1;
+                    }
+                }
+                foreach (var i in gpa)
+                {
+                    float percent = (float)i.Value / listStudent.Count * 100;
+                    Console.WriteLine($"{i.Key}: {percent}%");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"There are no students");
+            }
+            
+        }
+        public void ShowAllStudentByPerformance()
+        {
+            Console.WriteLine("----------------------------------------------------------------");
+            Console.WriteLine("Print list students by academic performance");
+            Console.WriteLine("Academic performance includes:");
+            Console.WriteLine("1. Poor");
+            Console.WriteLine("2. Weak");
+            Console.WriteLine("3. Average");
+            Console.WriteLine("4. Good");
+            Console.WriteLine("5. Very Good");
+            Console.WriteLine("6. Excellent");
+            Console.Write("Please enter performance: ");
+            string choise = Console.ReadLine();
+            switch (choise)
+            {
+                case "1":
+                    GetAllStudentByPerformance(AcademicPerformanceEnum.Poor);
+                    break;
+                case "2":
+                    GetAllStudentByPerformance(AcademicPerformanceEnum.Weak);
+                    break;
+                case "3":
+                    GetAllStudentByPerformance(AcademicPerformanceEnum.Average);
+                    break;
+                case "4":
+                    GetAllStudentByPerformance(AcademicPerformanceEnum.Good);
+                    break;
+                case "5":
+                    GetAllStudentByPerformance(AcademicPerformanceEnum.VeryGood);
+                    break;
+                case "6":
+                    GetAllStudentByPerformance(AcademicPerformanceEnum.Excellent);
+                    break;              
+                default:
+                    Console.WriteLine("Option does not exist. Please select again.");
+                    break;
+            }
+            
+        }
+        public void GetAllStudentByPerformance(AcademicPerformanceEnum performance)
+        {
+            if (listStudent.Any())
+            {
+                var listStudentPerformance = listStudent.Where(s => s.AcademicPerformance == performance).ToList();
+                if (listStudentPerformance.Any())
+                {
+                    Console.WriteLine($"List students with performance {performance}:");
+                    foreach (var student in listStudentPerformance)
+                    {
+                        student.toString();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"No students exist with {performance} academic performance");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"There are no students");
+            }
+        }
+
+        public void SaveToFile()
+        {
+            fileStream = new FileStream(path,FileMode.Create);
+            binaryFormatter = new BinaryFormatter();
+            binaryFormatter.Serialize(fileStream, listStudent);
+            fileStream.Close();
+            Console.WriteLine("----------------------------------------------------------------");
+            Console.WriteLine("File saved successfully");
+            
+        }
+        public void ReadFromFile()
+        {
+            fileStream = new FileStream(path,FileMode.Open);
+            binaryFormatter = new BinaryFormatter();
+            var data = binaryFormatter.Deserialize(fileStream);
+            listStudent = new List<Student>();
+            listStudent = (List<Student>)data;
+            fileStream.Close();
+            Console.WriteLine("Read file successfully");
         }
     }
 }
